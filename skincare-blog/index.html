@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="css/screenStyle.css"
+          media="screen"/>
+    <title>Skincare help</title>
+</head>
+
+<body>
+<header class="title-header">
+    <div class="container container-nav">
+        <div class="site-title">
+            <h1 class="title">Skincare help</h1>
+            <p class="subtitle">A blog about skincare</p>
+        </div>
+    </div>
+    <div class="menu">
+        <button id="menuTitle">Menu</button>
+
+        <nav id="menuIts" class="menu mnHide">
+            <a class="menuItem" href="#welcome">Welcome!</a>
+            <a class="menuItem" href="#articles">Articles</a>
+            <a class="menuItem" href="#artInsert">Add article</a>
+            <a class="menuItem" href="#opinions">Visitor opinions</a>
+            <a class="menuItem" href="#addOpinion">Add your opinion</a>
+        </nav>
+
+    </div>
+
+</header>
+
+<main id="router-view">
+</main>
+
+<footer>
+    <div class="container">
+        <div id="google_auth_button">Log in</div>
+        <div id="log-out-button">Log out</div>
+        <p>Legal info: Copyright 2022</p>
+        <p>Contacts:</p>
+        <a class="page-email" href="mailto:olha.shvenda@student.tuke.sk">Olha Shvenda: email</a>
+    </div>
+</footer>
+
+
+<!--Templates for html, dynamically inserted by the router -->
+
+<script id="template-welcome" type="text/template">
+    <div class="container">
+        <article class="page-article">
+            <p>We set high standards of quality, research, and transparency for what we share,
+                ensuring you have access to nothing but the best. <br><br>Here's how:<br><br> Our recommendations are
+                current and
+                based on research thanks to our diligent health and medical monitoring standards.<br><br>Featured brands
+                are reviewed for medical credibility, business practices, and social impact.
+            </p>
+        </article>
+    </div>
+</script>
+<script id="template-articles" type="text/template">
+    <div id="articles-render-container"></div>
+
+</script>
+
+<script id="mustache-articles-template" type="text/template">
+    <div class="container">
+        <h3>Page {{ currentPage }} of {{ maxPages }}</h3>
+
+        {{ #articles }}
+        <section class="article">
+            <div id="item">
+                <div id="highlight"></div>
+                <h3><a class="artTitle" href="{{detailLink}}">{{title}}</a></h3>
+            </div>
+            <p>Content: {{ content }}</p>
+            <p>{{ author }}</p>
+            <img class="feed_image" src="{{ imageLink }}">
+        </section>
+        {{ /articles }}
+        <a href="#welcome" class="articleButton"><<< Back</a>
+        {{ #prevPage }}<a href="#articles/{{ prevPage }}" class="articleButton"><<< Prev Page</a>{{ /prevPage }}
+        {{ #nextPage }}<a href="#articles/{{ nextPage }}" class="articleButton">Next Page >>></a>{{ /nextPage }}
+    </div>
+</script>
+<script id="template-opinions" type="text/template">
+    <article id="artOpinions">
+        <div class="container">
+            <h2>Visitor Opinions</h2>
+            {{#.}}
+            <section>
+                <h3>{{name}} <i>{{created}}</i></h3>
+                <p>{{email}}</p>
+                <p><b>Skin type: {{type}}</b></p>
+                <p><i>Best description of our web-blog: {{keywords}}</i></p>
+                <p>{{feedback}}</p>
+                <p><img class="feed_image" src="{{image}}" alt="fff"></p>
+            </section>
+            {{/.}}
+            {{^.}}
+            <section>
+                Sorry, no opinions found.
+            </section>
+            {{/.}}
+            <footer><a class="articleButton" href="#menuTitle">Back to the menu</a></footer>
+        </div>
+    </article>
+</script>
+
+<script id="template-addOpinion" type="text/template">
+    <article id="artOpnFrm">
+        <div class="container">
+            <h2>Leave your feedback:</h2>
+
+            <form id="opnFrm">
+                <div class="main_form">
+                    <label for="name">Your name:</label>
+                    <input type="text" name="name" id="name" placeholder="name and surname" required>
+                </div>
+                <div class="main_form">
+                    <label for="email">Your email:</label>
+                    <input type="email" name="email" id="email" placeholder="name.surname@gmail.com" required>
+                </div>
+                <div class="main_form" id="image_div">
+                    <label for="image">Image:</label>
+                    <input type="url" name="image" id="image" placeholder="link to image">
+                </div>
+                <div>
+                    <label>Your skin type:</label>
+                    <label class="container1">
+                        <input type="radio" name="type" value="Normal"/> Normal
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container1">
+                        <input type="radio" name="type" value="Dry"/> Dry
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container1">
+                        <input type="radio" name="type" value="Oil"/> Oil
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container1">
+                        <input type="radio" name="type" value="Combination"/> Combination
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container1">
+                        <input type="radio" name="type" value="Sensitive"/> Sensitive
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="keywords">
+                    <label for="keywords">Best description of our web-blog:</label>
+                    <input type="text" name="keywords" id="keywords" list="genres"/>
+
+                    <datalist id="genres">
+                        <option>Sunscreens</option>
+                        <option>Skincare</option>
+                        <option>DIY skincare</option>
+                        <option>All skin types</option>
+                    </datalist>
+                </div>
+                <div class="feedback">
+                    <label id="feedback_label" for="feedback">Your feedback:</label>
+                    <textarea name="feedback" id="feedback" placeholder="your opinion" required></textarea>
+                </div>
+                <div>
+                    <label class="container2">
+                        <input type="checkbox" name="agree" id="agree"/>I agree to the Privacy Policy
+                        <span class="checkmark2"></span>
+                    </label>
+                </div>
+                <a class="articleButton" href="#menuTitle">Back to the menu</a>
+                <button class="articleButton" type="reset">Reset</button>
+                <button class="articleButton" id="button_submit2" type="submit">Submit</button>
+            </form>
+        </div>
+    </article>
+</script>
+
+<script id="template-article" type="text/template">
+    <div class="container">
+        <article class="page-article">
+            <h2>{{title}}</h2>
+            <p>
+                by {{author}}
+            </p>
+
+            <p>{{ content }}</p>
+            <img class="feed_image" src="{{ imageLink }}">
+            <br>
+            <a href="{{articleEditLink}}" class="articleButton">Edit</a>
+            <a href="{{articleDeleteLink}}" class="articleButton">Delete</a>
+        </article>
+        <section>
+            <div class="comments-column-block">
+                <h2 class="commentsName">Comments</h2>
+                <div id="article-comments-container"></div>
+            </div>
+            <form id="commentsForm" class="column-block align-start inline-flex">
+                <h3>Add comment</h3>
+                <div class="main_form">
+                    <label>Enter your name <input type="text" required placeholder="Your name" name="login"></label>
+                </div>
+                <div class="comment">
+                    <label id="commentLabel" for="commentMessage">Enter your message</label>
+                    <textarea id="commentMessage" required placeholder="Enter your message here..."
+                              name="message"></textarea>
+                </div>
+                <a href="{{backLink}}" class="articleButton"><< Back</a>
+                <a href="#menuTitle" class="articleButton">Up to the menu</a>
+                <input type="submit" class="articleButton" id="button_submit3" value="Send">
+            </form>
+        </section>
+    </div>
+</script>
+
+<script id="template-article-form" type="text/template">
+    <div class="container">
+        <article class="page-article">
+            <h2>{{formTitle}}</h2> <br><br>
+
+            <form id="articleForm">
+
+                <label for="author">Author:</label>
+                <input type="text" name="author" id="author" value="{{author}}" size="50"
+                       title="Article author, max. length 100 characters."
+                       maxlength="100" placeholder="e.g. Ján Trieska"/>
+                <br>
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" value="{{title}}" size="50"
+                       maxlength="100" pattern="\S[\S\s]*" placeholder="e.g. My story." required
+                       title="Article title, mandatory item, max. length: 100 characters.
+The first character must not be a space."/>
+                <br>
+                <label for="imageLink">Image (url):</label>
+                <input type="url" name="imageLink" id="imageLink" value="{{imageLink}}" size="50"
+                       title="Image URL, max. length 100 characters." maxlength="100"/>
+                <br>
+                <label></label>
+                <button type="button" id="btShowFileUpload">
+                    Upload image
+                </button>
+
+                <fieldset class="added hiddenElm" id="fsetFileUpload">
+                    <legend>Image Upload</legend>
+                    <input type="file" id="flElm" name="file" accept="image/jpeg, image/png"/>
+                    <br/>
+                    <button type="button" id="btFileUpload">
+                        Send image to server
+                    </button>
+                    <button type="button" id="btCancelFileUpload">
+                        Cancel uploading
+                    </button>
+                </fieldset>
+
+
+                <br>
+                <label for="content">Article content:</label>
+                <textarea
+                        name="content" id="content" spellcheck="true" lang="sk"
+                        cols="50" rows="20" required
+                        title="Article content, mandatory item, can be plain text or in HTML.">
+              {{content}}
+            </textarea>
+                <br>
+                <label for="tags">Keywords:</label>
+                <input type="text" name="tags" id="tags" value="{{tags}}" size="50"
+                       title="Keyword list, comma separated." placeholder="e.g. village, drama"/>
+                <br> <br>
+                <a href="{{backLink}}" class="articleButton"><< Back</a>
+                <a href="#menuTitle" class="articleButton">Up to the menu</a>
+                <button class="articleButton" type="reset"> Reset Form</button>
+                <button class="articleButton" id="submit-button" type="submit"> {{submitBtTitle}}</button>
+            </form>
+        </article>
+    </div>
+</script>
+
+<script id="article-input-template" type="text/template">
+    <div class="container">
+        <article class="page-article">
+            <h2>Create new article:</h2>
+            <form id="articleForm1">
+                <div class="main_form">
+                    <label for="author">Author:</label>
+                    <input class="long-input" type="text" name="author" id="author1" value="{{author}}" size="50"
+                           title="Article author, max. length 100 characters." maxlength="100"
+                           placeholder="napr. Ján Trieska">
+                </div>
+                <div class="main_form">
+                    <label for="title">Title:</label>
+                    <input class="long-input" type="text" name="title" id="title1" value="{{title}}" size="50"
+                           maxlength="100"
+                           pattern="\S[\S\s]*" required
+                           title="Article title, mandatory item, max. length: 100 characters, the first character must not be a space."
+                           placeholder="napr. Môj prvý príbeh / e.g. My story.">
+                </div>
+                <div class="main_form">
+                    <label for="imageLink">Image (url):</label>
+                    <input class="long-input" type="url" name="imageLink" id="imageLink1" value="{{imageLink}}"
+                           size="50"
+                           placeholder="Image URL, max. length 100 characters.">
+                    <button type="button" id="btShowFileUpload1">Upload image</button>
+                </div>
+                <div class="main_form">
+                    <fieldset class="added hiddenElm" id="fsetFileUpload1">
+                        <legend>Image Upload</legend>
+                        <input id="imgFileInput" class="hidden-file-input" type="file" name="file"
+                               accept="image/jpeg, image/png">
+                        <label for="imgFileInput" id="chooseImageButton" class="file-select-button">Choose image</label>
+                        <br><br>
+                        <button type="button" id="btFileUpload1">Send image to server</button>
+                        <button type="button" id="btCancelFileUpload1">Cancel uploading</button>
+                        <p id="noImageError">Choose an image first!</p>
+                    </fieldset>
+                </div>
+                <div class="newArticle">
+                    <label id="articleLabel" for="content">Article content:</label>
+                    <textarea
+                            name="content"
+                            id="content1"
+                            required
+                            title="Article content, mandatory item, can be plain text or in HTML.">{{ content }}</textarea>
+                </div>
+                <div class="main_form">
+                    <label for="tags">Keywords:</label>
+
+                    <input type="text" name="tags" id="tags1" value="{{tags}}" size="50"
+                           title="Keyword list, comma separated." placeholder="e.g. village, drama">
+                </div>
+
+                <a href="{{backLink}}" class="articleButton"><< Back</a>
+                <a href="#menuTitle" class="articleButton">Up to the menu</a>
+                <button class="articleButton" type="reset">Reset</button>
+                <button class="articleButton" id="button_submit" type="submit">Submit</button>
+            </form>
+        </article>
+    </div>
+</script>
+<script id="template-articles-error" type="text/template">
+
+    <article>
+        <h2>Articles acquisition failed</h2>
+        <p>
+            {{errMessage}}
+        </p>
+    </article>
+    <footer class="menuLink"><a class="articleButton" href="#menuTitle">Back to the menu</a></footer>
+
+</script>
+
+<script id="comments-template" type="text/template">
+
+    {{ #comments }}
+    <h3 class="authorName">By: <i>{{ author }}</i></h3>
+    <span>{{ text }}</span>
+    <br>
+    {{ /comments }}
+
+    <div>
+        {{ #prevPage }}<a href="{{ prevPage }}" class="articleButton"><<< Previous {{ commentsPerPage }} comments</a>{{
+        /prevPage }}
+        {{ #nextPage }}<a href="{{ nextPage }}" class="articleButton">Next comments >>></a>{{
+        /nextPage }}
+    </div>
+</script>
+
+<!--JavaScript code, inserted as a module-->
+<script async defer src="https://accounts.google.com/gsi/client"></script>
+<script async src="./js/google.auth.js"></script>
+<script type="module" src="js/index.js"></script>
+<script async src="./js/mustache.min.js"></script>
+
+</body>
+</html>
